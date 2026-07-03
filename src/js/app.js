@@ -72,7 +72,9 @@ async function fetchMenu() {
             return FALLBACK_DATA;
         }
         
-        const response = await fetch(GOOGLE_SHEETS_CSV_URL);
+        // Add cache-buster to prevent browser caching of old sheets data
+        const fetchUrl = `${GOOGLE_SHEETS_CSV_URL}&_t=${Date.now()}`;
+        const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error("Network response was not ok");
         const csvText = await response.text();
         return parseCSV(csvText);
@@ -82,17 +84,29 @@ async function fetchMenu() {
     }
 }
 
-// Render Menu Cards
-function renderMenu(items) {
+let currentFilteredItems = [];
+const INITIAL_LIMIT = 6;
+let currentLimit = INITIAL_LIMIT;
+
+// Render Menu Cards with dynamic limits (Show More)
+function renderMenu(items, showAll = false) {
     const container = document.getElementById('menu-container');
     container.innerHTML = '';
     
+    // Store current state for "Show More" functionality
+    currentFilteredItems = items;
+    
     if (items.length === 0) {
         container.innerHTML = `<p class="text-brand-muted text-center col-span-full">No items found for this category.</p>`;
+        const loadMoreContainer = document.getElementById('load-more-container');
+        if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
         return;
     }
 
-    items.forEach((item, index) => {
+    // Limit elements to display
+    const itemsToRender = showAll ? items : items.slice(0, currentLimit);
+
+    itemsToRender.forEach((item, index) => {
         const delay = (index % 3) * 100; // Staggered animation
         
         const cardHTML = `
@@ -118,6 +132,64 @@ function renderMenu(items) {
         `;
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
+
+    // Check if there are more items to display
+    const loadMoreContainer = document.getElementById('load-more-container');
+    if (loadMoreContainer) {
+        if (items.length > itemsToRender.length) {
+            loadMoreContainer.classList.remove('hidden');
+        } else {
+            loadMoreContainer.classList.add('hidden');
+        }
+    }
+}
+
+// Category Emoji Map for visual appeal
+const CATEGORY_EMOJIS = {
+    'all': '✨',
+    'bites': '🍔',
+    'drinks': '🍻',
+    'specials': '⭐',
+    'dessert': '🍰',
+    'desserts': '🍰',
+    'main': '🍽️',
+    'mains': '🍽️',
+    'snack': '🍿',
+    'snacks': '🍿'
+};
+
+// Dynamically Render Category Filter Buttons based on Google Sheets data
+function renderCategoryFilters(items) {
+    const container = document.getElementById('category-filters');
+    if (!container) return;
+    
+    // Keep the "All" button and clear others
+    const allBtn = container.querySelector('[data-category="All"]');
+    container.innerHTML = '';
+    if (allBtn) {
+        container.appendChild(allBtn);
+    } else {
+        container.insertAdjacentHTML('beforeend', `<button data-category="All" class="filter-btn active px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-medium text-xs sm:text-sm tracking-wide uppercase transition-all duration-300 whitespace-nowrap shrink-0">All</button>`);
+    }
+    
+    // Get unique categories from items (filter out empty entries and 'All')
+    const rawCategories = items.map(item => item.Category).filter(cat => cat && cat.trim() !== '' && cat.toLowerCase() !== 'all');
+    const uniqueCategories = [...new Set(rawCategories)];
+    
+    uniqueCategories.forEach(category => {
+        const lowerCategory = category.toLowerCase();
+        const emoji = CATEGORY_EMOJIS[lowerCategory] || '✨';
+        const label = `${emoji} ${category}`;
+        
+        const buttonHTML = `
+            <button data-category="${category}" class="filter-btn bg-white text-brand-muted border border-brand-border hover:border-brand-green hover:text-brand-green px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-medium text-xs sm:text-sm tracking-wide uppercase transition-all duration-300 whitespace-nowrap shrink-0">
+                ${label}
+            </button>
+        `;
+        container.insertAdjacentHTML('beforeend', buttonHTML);
+    });
+    
+    setupFilters();
 }
 
 // Filter Logic
@@ -127,15 +199,11 @@ function setupFilters() {
     filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             // Update active state of buttons
-            filterButtons.forEach(b => {
-                b.classList.remove('bg-brand-green', 'text-white', 'shadow-md', 'active');
-                b.classList.add('bg-white', 'text-brand-muted', 'border', 'border-brand-border');
-            });
-            
-            btn.classList.remove('bg-white', 'text-brand-muted', 'border', 'border-brand-border');
-            btn.classList.add('bg-brand-green', 'text-white', 'shadow-md', 'active');
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             
             // Filter items
+            currentLimit = INITIAL_LIMIT; // Reset pagination limit on filter change
             const category = btn.getAttribute('data-category');
             if (category === 'All') {
                 renderMenu(menuItems);
@@ -177,9 +245,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderSkeletons();
     
     // Fetch data
-    menuItems = await fetchMenu();
+    const rawItems = await fetchMenu();
     
-    // Render
+    // Filter out inactive items (defaults to active if Status is empty or doesn't exist)
+    menuItems = rawItems.filter(item => {
+        if (!item.Status || item.Status.trim() === '') return true;
+        const status = item.Status.trim().toLowerCase();
+        return status !== 'inactive' && status !== 'false' && status !== '0' && status !== 'no';
+    });
+    
+    // Render Filters and Menu dynamically
+    renderCategoryFilters(menuItems);
     renderMenu(menuItems);
-    setupFilters();
+    
+    // Setup Show More click action
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+            currentLimit = currentFilteredItems.length; // Expand limit to display all remaining items
+            renderMenu(currentFilteredItems, true);
+        });
+    }
 });

@@ -17,6 +17,54 @@
   --font-cursive: "Dancing Script", cursive;
 }
 
+  /* Navigation dynamic colors */
+  #main-nav {
+    /* Default / Transparent state (over dark green hero) */
+    --nav-text: rgba(253, 251, 247, 0.85); /* brand-cream/85 */
+    --nav-text-hover: #E5B25D; /* brand-gold */
+    --nav-bg-hover: rgba(255, 255, 255, 0.1);
+    --nav-logo-title: #FDFBF7; /* brand-cream */
+    --nav-logo-subtitle: rgba(253, 251, 247, 0.6);
+    --nav-mobile-btn: #FDFBF7;
+  }
+  
+  #main-nav.nav-scrolled {
+    /* Scrolled state (over cream background) */
+    --nav-text: #637066; /* brand-muted */
+    --nav-text-hover: #3B4A3F; /* brand-green */
+    --nav-bg-hover: rgba(59, 74, 63, 0.05); /* brand-green/5 */
+    --nav-logo-title: #3B4A3F; /* brand-green */
+    --nav-logo-subtitle: #637066; /* brand-muted */
+    --nav-mobile-btn: #3B4A3F;
+  }
+
+  .nav-link {
+    color: var(--nav-text);
+    transition: all 0.3s ease;
+  }
+  .nav-link:hover {
+    color: var(--nav-text-hover);
+    background-color: var(--nav-bg-hover);
+  }
+  
+  .nav-logo-title {
+    color: var(--nav-logo-title);
+    transition: color 0.3s ease;
+  }
+  
+  .nav-logo-subtitle {
+    color: var(--nav-logo-subtitle);
+    transition: color 0.3s ease;
+  }
+  
+  .nav-mobile-btn {
+    color: var(--nav-mobile-btn);
+    transition: all 0.3s ease;
+  }
+  .nav-mobile-btn:hover {
+    background-color: var(--nav-bg-hover);
+  }
+
 /* ================================================
    ANIMATED STRING LIGHTS (signature brand element)
    ================================================ */
@@ -188,6 +236,32 @@
   .mobile-sheet.is-open {
     transform: translateY(0);
     pointer-events: auto;
+  }
+
+  /* ================================================
+     CATEGORY FILTER BUTTONS
+     ================================================ */
+  .filter-btn {
+    background-color: #ffffff;
+    color: #637066; /* brand-muted */
+    border: 1px solid #E2DFD2; /* brand-border */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .filter-btn:hover {
+    color: #3B4A3F; /* brand-green */
+    border-color: #3B4A3F;
+    transform: translateY(-1px);
+  }
+  .filter-btn.active {
+    background-color: #3B4A3F !important; /* brand-green */
+    color: #FDFBF7 !important; /* brand-cream */
+    border-color: #3B4A3F !important;
+    box-shadow: 0 4px 12px rgba(59, 74, 63, 0.15);
+  }
+  .filter-btn.active:hover {
+    color: #FDFBF7 !important; /* Ensure white text remains visible on hover when active */
+    background-color: #2C362F !important; /* brand-green-dark */
   }
 
   /* ================================================
