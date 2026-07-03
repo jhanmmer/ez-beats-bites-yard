@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZ Beats & Bites by the Yard — Good Vibes, Good Food</title>
+    <meta name="description" content="Cozy outdoor dining in Luisiana, Laguna. Acoustic beats, delicious bites, and unforgettable nights at the yard.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Tailwind Output -->
+    <link href="./src/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-brand-cream text-brand-text font-sans antialiased selection:bg-brand-green selection:text-white overflow-x-hidden">
+
+    <!-- ========================================
+         MOBILE NAV (bottom sheet)
+         ======================================== -->
+    <!-- Backdrop -->
+    <div id="mobile-backdrop" class="mobile-backdrop" aria-hidden="true"></div>
+    <!-- Bottom Sheet -->
+    <div class="mobile-sheet" id="mobile-nav" role="dialog" aria-label="Navigation menu">
+        <!-- Drag handle -->
+        <div class="flex justify-center pt-3 pb-2">
+            <div class="w-10 h-1 rounded-full bg-brand-border"></div>
+        </div>
+        <!-- Close button -->
+        <button id="mobile-close" class="absolute top-4 right-4 text-brand-muted hover:text-brand-green p-1.5 rounded-full hover:bg-brand-green/5 transition-colors" aria-label="Close menu">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <!-- Status badge -->
+        <div id="mobile-status" class="flex justify-center mb-4"></div>
+        <!-- Nav links -->
+        <nav class="flex flex-col items-center gap-1 px-6">
+            <a href="#about" class="mobile-link w-full text-center py-3.5 rounded-2xl text-base font-medium text-brand-text hover:bg-brand-green/5 transition-colors">The Yard</a>
+            <a href="#menu" class="mobile-link w-full text-center py-3.5 rounded-2xl text-base font-medium text-brand-text hover:bg-brand-green/5 transition-colors">Menu</a>
+            <a href="#location" class="mobile-link w-full text-center py-3.5 rounded-2xl text-base font-medium text-brand-text hover:bg-brand-green/5 transition-colors">Visit Us</a>
+        </nav>
+        <!-- CTA -->
+        <div class="px-6 mt-5">
+            <a href="#menu" class="mobile-link btn-accent w-full flex items-center justify-center gap-2 text-base font-semibold">
+                <span>Explore Menu</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+        </div>
+        <!-- Hours quick info -->
+        <div class="mt-6 mx-6 p-4 rounded-2xl bg-brand-warm border border-brand-border">
+            <div class="flex items-center gap-3 text-sm">
+                <svg class="w-4 h-4 text-brand-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-brand-muted">Mon–Sun 3 PM – 10 PM &bull; <span class="text-brand-gold font-medium">Closed Tuesdays</span></span>
+            </div>
+        </div>
+        <!-- Bottom safe area spacer -->
+        <div class="h-6"></div>
+    </div>
+
+    <!-- ========================================
+         NAVIGATION — compact on mobile, expands on desktop
+         ======================================== -->
+    <nav id="main-nav" class="fixed w-full z-50 transition-all duration-500 py-3 lg:py-4">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8">
+            <div class="flex justify-between items-center">
+                <a href="#" class="shrink-0 flex items-center gap-2 group">
+                    <img src="./src/image.png" alt="EZ Beats and Bites Logo" class="h-11 w-11 lg:h-14 lg:w-14 object-cover rounded-full bg-white border-2 border-brand-green/15 shadow-md transition-transform duration-300 group-hover:rotate-6">
+                    <div class="hidden sm:block">
+                        <span class="font-serif font-bold text-base lg:text-lg text-brand-green block leading-tight">EZ Beats & Bites</span>
+                        <span class="text-[10px] lg:text-xs text-brand-muted tracking-widest uppercase">by the Yard</span>
+                    </div>
+                </a>
+                <div class="hidden md:flex items-center gap-1">
+                    <a href="#about" class="px-4 py-2 rounded-full text-sm text-brand-muted hover:text-brand-green hover:bg-brand-green/5 font-medium transition-all">The Yard</a>
+                    <a href="#menu" class="px-4 py-2 rounded-full text-sm text-brand-muted hover:text-brand-green hover:bg-brand-green/5 font-medium transition-all">Menu</a>
+                    <a href="#location" class="px-4 py-2 rounded-full text-sm text-brand-muted hover:text-brand-green hover:bg-brand-green/5 font-medium transition-all">Visit Us</a>
+                    <div class="w-px h-5 bg-brand-border mx-2"></div>
+                    <div id="nav-status"></div>
+                    <a href="#menu" class="btn-primary ml-2 text-sm py-2 px-5">Explore Menu</a>
+                </div>
+                <!-- Mobile: status badge + hamburger -->
+                <div class="flex items-center gap-2 md:hidden">
+                    <div id="nav-status-mobile"></div>
+                    <button id="mobile-open" class="text-brand-green p-2 rounded-xl hover:bg-brand-green/5 transition-colors">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================
+         HERO — mobile-first sizing
+         ======================================== -->
+    <section class="relative min-h-svh flex flex-col items-center justify-center bg-brand-green overflow-hidden">
+        <!-- Texture overlay -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Ccircle cx=%222%22 cy=%222%22 r=%221%22 fill=%22%23FFF%22/%3E%3C/svg%3E');"></div>
+
+        <!-- String Lights — fewer on mobile, more on desktop -->
+        <div class="string-lights absolute top-[15%] left-[3%] right-[3%] z-10 hidden sm:block" data-aos="fade-down" data-aos-duration="1200">
+            <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+            <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        </div>
+        <div class="string-lights absolute top-[22%] sm:top-[26%] left-[8%] right-[8%] z-10" data-aos="fade-down" data-aos-delay="200" data-aos-duration="1200">
+            <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+            <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        </div>
+
+        <!-- Decorative leaves — smaller on mobile -->
+        <div class="absolute bottom-0 left-0 w-32 sm:w-64 h-32 sm:h-64 opacity-10 pointer-events-none">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path fill="#F2CC7F" d="M40,-62.6C52.2,-56.5,62.7,-46.2,69.4,-33.6C76.1,-21,79,-6.1,76.4,7.4C73.8,20.9,65.7,33,55.4,42.2C45.1,51.4,32.6,57.7,19.1,62.6C5.6,67.5,-8.9,71.1,-22.2,68.8C-35.5,66.5,-47.6,58.4,-56.4,47.5C-65.2,36.6,-70.7,22.9,-72.1,8.8C-73.5,-5.3,-70.8,-19.8,-63.7,-31.1C-56.6,-42.4,-45.1,-50.5,-33,-56.4C-20.9,-62.3,-8.2,-66,3.7,-71.2C15.6,-76.4,27.8,-68.7,40,-62.6Z" transform="translate(100 100)" /></svg>
+        </div>
+        <div class="absolute top-20 right-0 w-24 sm:w-48 h-24 sm:h-48 opacity-10 pointer-events-none">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path fill="#F2CC7F" d="M45.7,-76.3C58.9,-69.3,69,-55.4,76.5,-40.5C84,-25.6,88.9,-9.8,85.6,4.6C82.3,19,70.9,32.1,60.6,45.2C50.3,58.3,41.1,71.4,28.2,78.2C15.3,85,1.2,85.5,-13,83.4C-27.2,81.3,-41.5,76.6,-53.4,68.2C-65.3,59.8,-74.8,47.7,-80.7,33.8C-86.6,19.9,-88.9,4.2,-84.3,-9.6C-79.7,-23.4,-68.2,-35.3,-56.3,-44.6C-44.4,-53.9,-32.1,-60.6,-19.4,-67.2C-6.7,-73.8,6.4,-80.3,21.6,-81.4C36.8,-82.5,45.7,-76.3,45.7,-76.3Z" transform="translate(100 100)" /></svg>
+        </div>
+
+        <!-- Hero Content — mobile-first typography -->
+        <div class="relative z-20 text-center px-5 max-w-3xl mx-auto mt-20 sm:mt-16" data-aos="fade-up" data-aos-duration="1000">
+            <div class="relative mx-auto mb-6 sm:mb-8 w-fit" data-aos="zoom-in" data-aos-delay="200">
+                <div class="absolute -inset-1.5 rounded-full bg-brand-gold/30 blur-md"></div>
+                <img src="./src/image.png" alt="EZ Beats and Bites Logo" class="relative h-32 w-32 sm:h-40 sm:w-40 object-cover rounded-full bg-white border-3 border-brand-gold/50 shadow-2xl">
+            </div>
+            
+            <h1 class="text-brand-cream mb-5 sm:mb-6">
+                <span class="block font-serif text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-[1.15]">Good Vibes,</span>
+                <span class="block font-serif text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-[1.15] mt-1">Good Food,</span>
+                <span class="block font-cursive text-4xl sm:text-5xl lg:text-7xl text-brand-gold mt-3 sm:mt-4">EZ Lahat</span>
+            </h1>
+
+            <p class="text-brand-cream/70 text-base sm:text-lg lg:text-xl max-w-xl mx-auto mb-8 sm:mb-12 font-light leading-relaxed px-2">
+                Relax under the string lights with acoustic beats and delicious bites — your cozy outdoor escape in Luisiana.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full" data-aos="fade-up" data-aos-delay="300">
+                <a href="#menu" class="group w-full sm:w-auto bg-brand-gold text-brand-green font-semibold text-base sm:text-lg py-3.5 sm:py-4 px-8 sm:px-10 rounded-full transition-all duration-300 hover:bg-brand-gold-light flex items-center justify-center gap-3" style="box-shadow: 0 4px 20px rgba(229,178,93,0.4);">
+                    Explore the Menu
+                    <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <a href="#location" class="text-brand-cream/80 hover:text-brand-gold font-medium flex items-center gap-2 transition-colors py-3 px-6">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Find the Yard
+                </a>
+            </div>
+        </div>
+
+        <!-- Curved bottom edge -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-12 sm:h-16 lg:h-24">
+                <path d="M0 100V60C240 20 480 0 720 0C960 0 1200 20 1440 60V100H0Z" fill="#FDFBF7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ========================================
+         ABOUT — image first on mobile (visual hook)
+         ======================================== -->
+    <section id="about" class="py-16 sm:py-20 lg:py-32 relative">
+        <div class="max-w-5xl mx-auto px-5 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+                <!-- Image comes FIRST on mobile for visual impact -->
+                <div class="relative order-1 md:order-2" data-aos="fade-up">
+                    <div class="aspect-4/3 sm:aspect-4/5 rounded-2xl sm:rounded-[32px] overflow-hidden shadow-xl sm:shadow-2xl">
+                        <img src="./src/yard_dining.png" alt="Cozy outdoor dining with string lights" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Floating accent card — repositioned for mobile -->
+                    <div class="absolute -bottom-4 left-4 sm:-bottom-6 sm:-left-6 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-xl border border-brand-border" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="flex items-center gap-3">
+                            <div class="text-2xl sm:text-3xl">🎵</div>
+                            <div>
+                                <div class="font-serif font-bold text-brand-green text-sm sm:text-base">Live Acoustic</div>
+                                <div class="text-brand-muted text-xs sm:text-sm">Every Weekend</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Text content -->
+                <div class="order-2 md:order-1" data-aos="fade-up" data-aos-delay="100">
+                    <span class="text-brand-gold font-cursive text-xl sm:text-2xl">Welcome to</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-green mt-2 mb-5 sm:mb-6">The Yard</h2>
+                    <p class="text-brand-muted text-base sm:text-lg leading-relaxed mb-4 sm:mb-6">
+                        EZ Beats & Bites isn't just a restaurant — it's a feeling. Picture this: warm string lights overhead, acoustic music drifting through the air, and your favorite people sharing platters of sizzling food.
+                    </p>
+                    <p class="text-brand-muted text-base sm:text-lg leading-relaxed">
+                        Whether it's an after-work hangout or a weekend escape, the yard is your happy place.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         MENU SECTION — mobile-optimized grid & filters
+         ======================================== -->
+    <section id="menu" class="py-16 sm:py-20 lg:py-28 bg-brand-warm relative">
+        <!-- Subtle texture -->
+        <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Ccircle cx=%222%22 cy=%222%22 r=%221.5%22 fill=%22%233B4A3F%22/%3E%3C/svg%3E');"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+                <span class="text-brand-gold font-cursive text-xl sm:text-2xl">Sarap Nito</span>
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-6xl font-bold text-brand-green mt-2 mb-4 sm:mb-6">Our Menu</h2>
+                <p class="text-brand-muted max-w-lg mx-auto text-sm sm:text-lg">From sizzling sisig to ice-cold drinks — everything you need for the perfect yard night.</p>
+            </div>
+
+            <!-- Category Filters — horizontally scrollable on mobile -->
+            <div class="flex gap-2 sm:gap-3 mb-8 sm:mb-16 overflow-x-auto pb-2 sm:pb-0 sm:flex-wrap sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0" id="category-filters" data-aos="fade-up" data-aos-delay="100">
+                <button data-category="All" class="filter-btn active px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-medium text-xs sm:text-sm tracking-wide uppercase transition-all duration-300 bg-brand-green text-white shadow-md whitespace-nowrap shrink-0">All</button>
+                <button data-category="Bites" class="filter-btn px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-medium text-xs sm:text-sm tracking-wide uppercase transition-all duration-300 bg-white text-brand-muted border border-brand-border hover:border-brand-green hover:text-brand-green whitespace-nowrap shrink-0">🍔 Bites</button>
+                <button data-category="Drinks" class="filter-btn px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-medium text-xs sm:text-sm tracking-wide uppercase transition-all duration-300 bg-white text-brand-muted border border-brand-border hover:border-brand-green hover:text-brand-green whitespace-nowrap shrink-0">🍻 Drinks</button>
+                <button data-category="Specials" class="filter-btn px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-medium text-xs sm:text-sm tracking-wide uppercase transition-all duration-300 bg-white text-brand-muted border border-brand-border hover:border-brand-green hover:text-brand-green whitespace-nowrap shrink-0">⭐ Specials</button>
+            </div>
+
+            <!-- Menu Grid — single column mobile, 2 col tablet, 3 col desktop -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8" id="menu-container">
+                <!-- JS injects menu cards here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         FOOTER / LOCATION
+         ======================================== -->
+    <footer id="location" class="bg-brand-green text-brand-cream relative overflow-hidden">
+        <!-- Top curve -->
+        <div class="absolute top-0 left-0 right-0 translate-y-[-98%]">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-8 sm:h-12 lg:h-20">
+                <path d="M0 80V40C360 80 720 80 1080 40C1260 20 1440 0 1440 0V80H0Z" fill="#3B4A3F"/>
+            </svg>
+        </div>
+
+        <!-- String lights — hidden on very small screens for cleaner look -->
+        <div class="string-lights mt-6 sm:mt-8 mx-4 sm:mx-8 opacity-60 hidden sm:block">
+            <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+            <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 pt-12 sm:pt-16 pb-8 sm:pb-10">
+            <div class="grid grid-cols-1 gap-10 sm:gap-12 md:grid-cols-3 md:gap-16 mb-10 sm:mb-16">
+                <!-- Brand -->
+                <div data-aos="fade-up" class="text-center md:text-left">
+                    <img src="./src/image.png" alt="Logo" class="h-20 w-20 sm:h-24 sm:w-24 object-cover rounded-full bg-white border-2 border-brand-gold/30 shadow-lg mb-5 sm:mb-6 mx-auto md:mx-0">
+                    <h3 class="font-serif text-xl sm:text-2xl font-bold text-brand-gold mb-3 sm:mb-4">EZ Beats & Bites</h3>
+                    <p class="text-brand-cream/60 leading-relaxed text-sm sm:text-base">Good vibes, Good Food, EZ Lahat. Your cozy outdoor escape in Luisiana, Laguna.</p>
+                    <div class="flex gap-3 mt-5 sm:mt-6 justify-center md:justify-start">
+                        <a href="https://www.facebook.com/share/19Kov7Xphz/" target="_blank" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 flex items-center justify-center text-brand-cream hover:bg-brand-gold hover:text-brand-green transition-all duration-300 hover:scale-110">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"/></svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Visit Info -->
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="font-serif text-lg sm:text-xl font-bold text-brand-gold mb-5 sm:mb-6 text-center md:text-left">Visit the Yard</h3>
+                    <ul class="space-y-4 sm:space-y-5 text-brand-cream/70">
+                        <li class="flex items-start gap-3 sm:gap-4">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-brand-cream text-sm sm:text-base">Luisiana, Laguna</div>
+                                <div class="text-xs sm:text-sm">Check our FB page for the exact map pin</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 sm:gap-4">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-brand-cream text-sm sm:text-base">Mon – Sun: 3:00 PM – 10:00 PM</div>
+                                <div class="text-xs sm:text-sm">(Sometimes opens at 10:00 AM)</div>
+                                <div class="text-brand-gold text-xs sm:text-sm font-medium mt-1">Closed every Tuesday</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div data-aos="fade-up" data-aos-delay="200" class="text-center md:text-left">
+                    <h3 class="font-serif text-lg sm:text-xl font-bold text-brand-gold mb-5 sm:mb-6">Say Hello</h3>
+                    <p class="text-brand-cream/60 mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base">Planning a hangout with friends? Send us a message to secure your spot under the lights.</p>
+                    <a href="https://m.me/ezbitesandbitesbytheyard" target="_blank" class="inline-flex items-center gap-2 sm:gap-3 bg-brand-cream text-brand-green font-semibold py-3 sm:py-3.5 px-6 sm:px-7 rounded-full hover:bg-brand-gold transition-all duration-300 hover:scale-105 text-sm sm:text-base" style="box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.145 2 11.26c0 2.92 1.5 5.518 3.86 7.234v3.506l3.525-1.933c.84.233 1.724.36 2.615.36 5.523 0 10-4.145 10-9.26S17.523 2 12 2zm1.182 12.35l-2.617-2.793-5.093 2.793 5.59-5.94 2.64 2.793 5.068-2.793-5.588 5.94z"/></svg>
+                        Message Us
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bottom bar -->
+            <div class="border-t border-white/10 pt-6 sm:pt-8 flex flex-col items-center gap-2 text-brand-cream/40 text-xs sm:text-sm">
+                <p class="font-cursive text-brand-gold/60 text-base sm:text-lg">Good vibes only ✨</p>
+                <p>&copy; 2026 EZ Beats & Bites by the Yard. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- ========================================
+         SCRIPTS
+         ======================================== -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true, offset: 30 });
+
+        // ── Navbar scroll effect ──
+        const nav = document.getElementById('main-nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 60) {
+                nav.classList.add('bg-brand-cream/95', 'backdrop-blur-lg', 'shadow-sm', 'py-2');
+                nav.classList.remove('py-3', 'lg:py-4');
+            } else {
+                nav.classList.remove('bg-brand-cream/95', 'backdrop-blur-lg', 'shadow-sm', 'py-2');
+                nav.classList.add('py-3', 'lg:py-4');
+            }
+        });
+
+        // ── Mobile Nav (Bottom Sheet) ──
+        const mobileNav = document.getElementById('mobile-nav');
+        const backdrop = document.getElementById('mobile-backdrop');
+
+        function openSheet() {
+            mobileNav.classList.add('is-open');
+            backdrop.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSheet() {
+            mobileNav.classList.remove('is-open');
+            backdrop.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('mobile-open').addEventListener('click', openSheet);
+        document.getElementById('mobile-close').addEventListener('click', closeSheet);
+        backdrop.addEventListener('click', closeSheet);
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', closeSheet);
+        });
+
+        // ── Live Open/Closed Badge ──
+        function updateStatus() {
+            const now = new Date();
+            const day = now.getDay();
+            const hour = now.getHours();
+            const isTuesday = day === 2;
+            const isOpen = !isTuesday && hour >= 15 && hour < 22;
+
+            const badge = `
+                <div class="status-badge ${isOpen ? 'open' : 'closed'}">
+                    <span class="status-dot"></span>
+                    ${isOpen ? 'Open Now' : (isTuesday ? 'Closed Today' : 'Closed')}
+                </div>
+            `;
+            // Update both desktop and mobile badges
+            const desktopEl = document.getElementById('nav-status');
+            const mobileEl = document.getElementById('nav-status-mobile');
+            const mobileNavEl = document.getElementById('mobile-status');
+            if (desktopEl) desktopEl.innerHTML = badge;
+            if (mobileEl) mobileEl.innerHTML = badge;
+            if (mobileNavEl) mobileNavEl.innerHTML = badge;
+        }
+        updateStatus();
+        setInterval(updateStatus, 60000);
+    </script>
+    <script src="./src/js/app.js"></script>
+</body>
+</html>

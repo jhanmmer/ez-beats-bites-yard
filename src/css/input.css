@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #3B4A3F;
+  --color-brand-green-dark: #2C362F;
+  --color-brand-green-light: #4D5F52;
+  --color-brand-gold: #E5B25D;
+  --color-brand-gold-light: #F2CC7F;
+  --color-brand-cream: #FDFBF7;
+  --color-brand-text: #2C332D;
+  --color-brand-muted: #637066;
+  --color-brand-border: #E2DFD2;
+  --color-brand-warm: #FAF3E8;
+
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Outfit", sans-serif;
+  --font-cursive: "Dancing Script", cursive;
+}
+
+/* ================================================
+   ANIMATED STRING LIGHTS (signature brand element)
+   ================================================ */
+@layer components {
+
+  .string-lights {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    overflow: visible;
+  }
+  .string-lights::before {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #2C332D;
+    border-radius: 999px;
+  }
+  .bulb {
+    position: absolute;
+    top: 14px;
+    width: 12px;
+    height: 18px;
+    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+    animation: flicker 3s ease-in-out infinite alternate;
+    filter: blur(0px);
+    box-shadow: 0 0 8px 2px currentColor;
+  }
+  .bulb::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 8px;
+    background: #555;
+    border-radius: 2px;
+  }
+  .bulb:nth-child(1) { left: 8%; color: #F2CC7F; background: #F2CC7F; animation-delay: 0s; }
+  .bulb:nth-child(2) { left: 22%; color: #E5B25D; background: #E5B25D; animation-delay: 0.4s; }
+  .bulb:nth-child(3) { left: 36%; color: #F2CC7F; background: #F2CC7F; animation-delay: 0.8s; }
+  .bulb:nth-child(4) { left: 50%; color: #E5B25D; background: #E5B25D; animation-delay: 1.2s; }
+  .bulb:nth-child(5) { left: 64%; color: #F2CC7F; background: #F2CC7F; animation-delay: 1.6s; }
+  .bulb:nth-child(6) { left: 78%; color: #E5B25D; background: #E5B25D; animation-delay: 2.0s; }
+  .bulb:nth-child(7) { left: 92%; color: #F2CC7F; background: #F2CC7F; animation-delay: 2.4s; }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; filter: brightness(1.1); }
+    30% { opacity: 0.85; filter: brightness(0.9); }
+    60% { opacity: 1; filter: brightness(1.2); }
+    80% { opacity: 0.9; filter: brightness(1); }
+  }
+
+  /* ================================================
+     MENU CARD — organic shape, lifted hover
+     ================================================ */
+  .menu-card {
+    @apply bg-white text-brand-text transition-all duration-500 overflow-hidden relative;
+    border-radius: 20px 20px 20px 20px;
+    box-shadow: 0 1px 3px rgba(59,74,63,0.06);
+  }
+  .menu-card:hover {
+    transform: translateY(-8px) rotate(-0.5deg);
+    box-shadow: 0 20px 60px rgba(59,74,63,0.12), 0 0 0 1px rgba(229,178,93,0.2);
+  }
+  .menu-card:active {
+    @apply scale-[0.98];
+  }
+
+  /* ================================================
+     BUTTONS
+     ================================================ */
+  .btn-primary {
+    @apply bg-brand-green text-brand-cream font-medium py-3 px-8 rounded-full transition-all duration-300;
+    box-shadow: 0 4px 14px rgba(59,74,63,0.3);
+  }
+  .btn-primary:hover {
+    @apply bg-brand-green-dark;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59,74,63,0.35);
+  }
+  .btn-primary:active {
+    @apply scale-95;
+  }
+
+  .btn-accent {
+    @apply bg-brand-gold text-brand-text font-medium py-3 px-8 rounded-full transition-all duration-300;
+    box-shadow: 0 4px 14px rgba(229,178,93,0.3);
+  }
+  .btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(229,178,93,0.35);
+  }
+
+  /* ================================================
+     LEAF / VINE DIVIDER
+     ================================================ */
+  .leaf-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 0;
+  }
+  .leaf-divider::before,
+  .leaf-divider::after {
+    content: '';
+    flex: 1;
+    max-width: 120px;
+    height: 1px;
+    background: linear-gradient(to var(--dir, right), transparent, #E2DFD2);
+  }
+  .leaf-divider::after {
+    --dir: left;
+  }
+
+  /* ================================================
+     OPEN/CLOSED BADGE
+     ================================================ */
+  .status-badge {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium;
+  }
+  .status-badge.open {
+    @apply bg-green-100 text-green-800;
+  }
+  .status-badge.closed {
+    @apply bg-red-100 text-red-800;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  .open .status-dot { background: #22c55e; }
+  .closed .status-dot { background: #ef4444; }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* ================================================
+     MOBILE BACKDROP (frosted overlay)
+     ================================================ */
+  .mobile-backdrop {
+    @apply fixed inset-0 z-60 bg-black/0 backdrop-blur-none pointer-events-none;
+    transition: background-color 0.35s ease, backdrop-filter 0.35s ease;
+  }
+  .mobile-backdrop.is-open {
+    @apply bg-black/30 backdrop-blur-sm pointer-events-auto;
+  }
+
+  /* ================================================
+     MOBILE BOTTOM SHEET
+     ================================================ */
+  .mobile-sheet {
+    @apply fixed left-0 right-0 bottom-0 z-60 bg-white rounded-t-3xl shadow-2xl;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 85vh;
+    overflow-y: auto;
+    pointer-events: none;
+  }
+  .mobile-sheet.is-open {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ================================================
+     HIDE SCROLLBAR (for mobile filter pills)
+     ================================================ */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ================================================
+     CUSTOM SCROLLBAR (page-level)
+     ================================================ */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #FDFBF7; }
+  ::-webkit-scrollbar-thumb { background: #E2DFD2; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3B4A3F; }
+
+  /* ================================================
+     SAFE AREA for notched phones
+     ================================================ */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    footer {
+      padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
+    }
+  }
+}
