@@ -138,3 +138,22 @@ const sectionObserver = new IntersectionObserver((entries) => {
 sections.forEach(section => {
     sectionObserver.observe(section);
 });
+
+// ── Hero Carousel ──
+const heroCarousel = document.getElementById('hero-carousel');
+if (heroCarousel) {
+    const slides = heroCarousel.querySelectorAll('.carousel-slide');
+    let currentSlide = 0;
+    
+    if (slides.length > 1) {
+        setInterval(() => {
+            slides[currentSlide].classList.remove('opacity-100');
+            slides[currentSlide].classList.add('opacity-0');
+            
+            currentSlide = (currentSlide + 1) % slides.length;
+            
+            slides[currentSlide].classList.remove('opacity-0');
+            slides[currentSlide].classList.add('opacity-100');
+        }, 4000); // Fades to next image every 4 seconds
+    }
+}

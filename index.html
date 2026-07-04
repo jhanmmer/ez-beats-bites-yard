@@ -149,15 +149,21 @@
                     <div class="bulb"></div><div class="bulb"></div>
                 </div>
                 
-                <!-- Cozy photo box -->
-                <div class="w-full h-full rounded-4xl overflow-hidden border-4 border-brand-gold/20 shadow-2xl relative group">
-                    <img src="./src/yard_dining.webp" alt="Cozy outdoor yard dining setup" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" decoding="async">
+                <!-- Cozy photo carousel box -->
+                <div class="w-full h-full rounded-4xl overflow-hidden border-4 border-brand-gold/20 shadow-2xl relative group" id="hero-carousel">
+                    <!-- Slide 1 -->
+                    <img src="./src/yard_dining.webp" alt="EZ Beats Place 1" class="carousel-slide absolute inset-0 w-full h-full object-cover transition-all duration-1000 opacity-100 group-hover:scale-105" decoding="async">
+                    <!-- Slide 2 (Change src) -->
+                    <img src="./src/yard_dining.webp" alt="EZ Beats Place 2" class="carousel-slide absolute inset-0 w-full h-full object-cover transition-all duration-1000 opacity-0 group-hover:scale-105" decoding="async">
+                    <!-- Slide 3 (Change src) -->
+                    <img src="./src/yard_dining.webp" alt="EZ Beats Place 3" class="carousel-slide absolute inset-0 w-full h-full object-cover transition-all duration-1000 opacity-0 group-hover:scale-105" decoding="async">
+                    
                     <!-- Subtle vignette overlay -->
-                    <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent"></div>
+                    <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent z-10 pointer-events-none"></div>
                 </div>
 
                 <!-- Floating Badge: "Chill. Eat. Enjoy. Repeat." -->
-                <div class="absolute -bottom-4 -right-2 bg-white text-brand-green font-serif font-bold text-sm sm:text-base px-6 py-3.5 rounded-2xl shadow-xl border border-brand-border/60 flex items-center gap-2" data-aos="zoom-in" data-aos-delay="400">
+                <div class="absolute -bottom-4 -right-2 bg-white text-brand-green font-serif font-bold text-sm sm:text-base px-6 py-3.5 rounded-2xl shadow-xl border border-brand-border/60 flex items-center gap-2 z-30" data-aos="zoom-in" data-aos-delay="400">
                     <span class="animate-bounce">✨</span>
                     <span>Chill. Eat. Enjoy. Repeat.</span>
                 </div>
@@ -185,7 +191,7 @@
                         EZ Beats & Bites isn't just a place to eat — it's a feeling. Experience our cozy, self-service Korean dining concept! Grill your favorites on electric table-top cookers, enjoy spicy Buldak ramen, ready-made drinks, and coffee, alongside comfort favorites like burgers, fries, and chops under the stars.
                     </p>
                     <p class="text-brand-muted text-base sm:text-lg leading-relaxed">
-                        With acoustic beats playing under the warm string lights, the yard is your happy place.
+                        With good music playing under the warm string lights, the yard is your happy place.
                     </p>
                 </div>
 
@@ -199,8 +205,8 @@
                         <div class="flex items-center gap-3">
                             <div class="text-2xl sm:text-3xl">🎵</div>
                             <div>
-                                <div class="font-serif font-bold text-brand-green text-sm sm:text-base">Live Acoustic</div>
-                                <div class="text-brand-muted text-xs sm:text-sm">Every Weekend</div>
+                                <div class="font-serif font-bold text-brand-green text-sm sm:text-base">Karaoke & Beats</div>
+                                <div class="text-brand-muted text-xs sm:text-sm">Sing your heart out</div>
                             </div>
                         </div>
                     </div>
