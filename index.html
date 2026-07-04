@@ -50,7 +50,7 @@
         <div class="mt-6 mx-6 p-4 rounded-2xl bg-brand-warm border border-brand-border">
             <div class="flex items-center gap-3 text-sm">
                 <svg class="w-4 h-4 text-brand-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span class="text-brand-muted">Mon–Sun 3 PM – 10 PM &bull; <span class="text-brand-gold font-medium">Closed Tuesdays</span></span>
+                <span class="text-brand-muted">Wed–Sun 3 PM – 10 PM &bull; <span class="text-brand-gold font-medium">Closed Mon & Tue</span></span>
             </div>
         </div>
         <!-- Bottom safe area spacer -->
@@ -285,9 +285,9 @@
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <div>
-                                <div class="font-semibold text-brand-cream text-sm sm:text-base">Mon – Sun: 3:00 PM – 10:00 PM</div>
+                                <div class="font-semibold text-brand-cream text-sm sm:text-base">Wed – Sun: 3:00 PM – 10:00 PM</div>
                                 <div class="text-xs sm:text-sm">(Sometimes opens at 10:00 AM)</div>
-                                <div class="text-brand-gold text-xs sm:text-sm font-medium mt-1">Closed every Tuesday</div>
+                                <div class="text-brand-gold text-xs sm:text-sm font-medium mt-1">Closed Mondays & Tuesdays</div>
                             </div>
                         </li>
                     </ul>
@@ -360,13 +360,14 @@
             const now = new Date();
             const day = now.getDay();
             const hour = now.getHours();
-            const isTuesday = day === 2;
-            const isOpen = !isTuesday && hour >= 15 && hour < 22;
+            // Closed Mondays (1) and Tuesdays (2)
+            const isClosedDay = day === 1 || day === 2;
+            const isOpen = !isClosedDay && hour >= 15 && hour < 22;
 
             const badge = `
                 <div class="status-badge ${isOpen ? 'open' : 'closed'}">
                     <span class="status-dot"></span>
-                    ${isOpen ? 'Open Now' : (isTuesday ? 'Closed Today' : 'Closed')}
+                    ${isOpen ? 'Open Now' : (isClosedDay ? 'Closed Today' : 'Closed')}
                 </div>
             `;
             // Update both desktop and mobile badges
