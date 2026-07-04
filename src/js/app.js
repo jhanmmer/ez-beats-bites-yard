@@ -62,8 +62,12 @@ function parseCSV(text) {
     return result;
 }
 
-// Fetch menu data
+// Fetch menu data with LocalStorage caching (5 minutes expiry) and CDN-friendly cache busting
 async function fetchMenu() {
+    const CACHE_KEY = 'ez_beats_menu_data';
+    const CACHE_TIME_KEY = 'ez_beats_menu_timestamp';
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
     try {
         if (!GOOGLE_SHEETS_CSV_URL) {
             console.log("No Google Sheets URL provided, using fallback data.");
@@ -71,15 +75,42 @@ async function fetchMenu() {
             await new Promise(r => setTimeout(r, 1000));
             return FALLBACK_DATA;
         }
+
+        // Check if fresh cache exists
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        const cachedTimestamp = localStorage.getItem(CACHE_TIME_KEY);
+        const now = Date.now();
+
+        if (cachedData && cachedTimestamp && (now - cachedTimestamp < CACHE_DURATION)) {
+            console.log("Loading menu from local cache...");
+            return JSON.parse(cachedData);
+        }
         
-        // Add cache-buster to prevent browser caching of old sheets data
-        const fetchUrl = `${GOOGLE_SHEETS_CSV_URL}&_t=${Date.now()}`;
+        // Use a 5-minute cache bucket for the URL parameter to allow Vercel/Google CDN edge caching
+        const timeBucket = Math.floor(now / CACHE_DURATION);
+        const fetchUrl = `${GOOGLE_SHEETS_CSV_URL}&_t=${timeBucket}`;
+        
+        console.log("Fetching fresh menu data from Google Sheets...");
         const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error("Network response was not ok");
         const csvText = await response.text();
-        return parseCSV(csvText);
+        const parsedData = parseCSV(csvText);
+
+        // Update local cache
+        if (parsedData && parsedData.length > 0) {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(parsedData));
+            localStorage.setItem(CACHE_TIME_KEY, now.toString());
+        }
+
+        return parsedData;
     } catch (error) {
-        console.error("Error fetching menu, falling back to default:", error);
+        console.error("Error fetching menu, checking fallback or cache:", error);
+        // Fallback to expired cache if network fails, otherwise use hardcoded fallback
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+            console.log("Using expired cache as emergency fallback.");
+            return JSON.parse(cachedData);
+        }
         return FALLBACK_DATA;
     }
 }
