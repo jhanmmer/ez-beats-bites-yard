@@ -122,7 +122,6 @@ let currentLimit = INITIAL_LIMIT;
 // Render Menu Cards with dynamic limits (Show More)
 function renderMenu(items, showAll = false) {
     const container = document.getElementById('menu-container');
-    container.innerHTML = '';
     
     // Store current state for "Show More" functionality
     currentFilteredItems = items;
@@ -137,32 +136,78 @@ function renderMenu(items, showAll = false) {
     // Limit elements to display
     const itemsToRender = showAll ? items : items.slice(0, currentLimit);
 
-    itemsToRender.forEach((item, index) => {
-        const delay = (index % 3) * 100; // Staggered animation
+    // Check if we can update the existing cards in place to prevent animation re-triggers and flashing
+    const existingCards = container.querySelectorAll('.menu-card:not(.animate-pulse)');
+    if (existingCards.length === itemsToRender.length) {
+        existingCards.forEach((card, index) => {
+            const item = itemsToRender[index];
+            
+            // Update image
+            const img = card.querySelector('img');
+            if (img && img.src !== item.ImageURL) {
+                img.src = item.ImageURL || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1500&auto=format&fit=crop';
+                img.alt = item.Name;
+            }
+            
+            // Update price
+            const priceEl = card.querySelector('.menu-price');
+            if (priceEl && priceEl.textContent.trim() !== `₱${item.Price}`) {
+                priceEl.textContent = `₱${item.Price}`;
+            }
+            
+            // Update category
+            const catEl = card.querySelector('.menu-category');
+            if (catEl && catEl.textContent.trim() !== item.Category) {
+                catEl.textContent = item.Category;
+            }
+            
+            // Update name
+            const nameEl = card.querySelector('.menu-name');
+            if (nameEl && nameEl.textContent.trim() !== item.Name) {
+                nameEl.textContent = item.Name;
+            }
+            
+            // Update description
+            const descEl = card.querySelector('.menu-desc');
+            if (descEl && descEl.textContent.trim() !== item.Description) {
+                descEl.textContent = item.Description;
+            }
+        });
+    } else {
+        // Rebuild elements if length changed or we had skeleton loaders
+        container.innerHTML = '';
+        itemsToRender.forEach((item, index) => {
+            const delay = (index % 3) * 100; // Staggered animation
+            
+            const cardHTML = `
+                <div class="menu-card group cursor-pointer" data-aos="fade-up" data-aos-delay="${delay}">
+                    <div class="h-44 sm:h-56 w-full overflow-hidden relative bg-brand-border/30">
+                        <img src="${item.ImageURL || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1500&auto=format&fit=crop'}" 
+                             alt="${item.Name}" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                             loading="lazy">
+                        <div class="menu-price absolute top-3 right-3 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-sm text-brand-green font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-md border border-brand-border text-sm sm:text-base">
+                            ₱${item.Price}
+                        </div>
+                        <div class="menu-category absolute top-3 left-3 sm:top-4 sm:left-4 bg-brand-cream text-brand-green text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-full shadow-sm uppercase tracking-wide opacity-90">
+                            ${item.Category}
+                        </div>
+                    </div>
+                    <div class="p-5 sm:p-8">
+                        <h3 class="menu-name text-lg sm:text-2xl font-serif font-bold text-brand-green mb-2 sm:mb-3">${item.Name}</h3>
+                        <p class="menu-desc text-brand-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3">${item.Description}</p>
+                        <button class="w-full py-2.5 sm:py-3 rounded-full border-2 border-brand-green text-brand-green text-sm sm:text-base font-medium group-hover:bg-brand-green group-hover:text-white transition-all duration-300 transform group-hover:shadow-md">Add to Order</button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', cardHTML);
+        });
         
-        const cardHTML = `
-            <div class="menu-card group cursor-pointer" data-aos="fade-up" data-aos-delay="${delay}">
-                <div class="h-44 sm:h-56 w-full overflow-hidden relative bg-brand-border/30">
-                    <img src="${item.ImageURL || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1500&auto=format&fit=crop'}" 
-                         alt="${item.Name}" 
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                         loading="lazy">
-                    <div class="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-sm text-brand-green font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-md border border-brand-border text-sm sm:text-base">
-                        ₱${item.Price}
-                    </div>
-                    <div class="absolute top-3 left-3 sm:top-4 sm:left-4 bg-brand-cream text-brand-green text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-full shadow-sm uppercase tracking-wide opacity-90">
-                        ${item.Category}
-                    </div>
-                </div>
-                <div class="p-5 sm:p-8">
-                    <h3 class="text-lg sm:text-2xl font-serif font-bold text-brand-green mb-2 sm:mb-3">${item.Name}</h3>
-                    <p class="text-brand-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3">${item.Description}</p>
-                    <button class="w-full py-2.5 sm:py-3 rounded-full border-2 border-brand-green text-brand-green text-sm sm:text-base font-medium group-hover:bg-brand-green group-hover:text-white transition-all duration-300 transform group-hover:shadow-md">Add to Order</button>
-                </div>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', cardHTML);
-    });
+        // Refresh AOS animations for the newly rendered cards
+        if (window.AOS) {
+            setTimeout(() => AOS.refresh(), 50);
+        }
+    }
 
     // Check if there are more items to display
     const loadMoreContainer = document.getElementById('load-more-container');
@@ -172,11 +217,6 @@ function renderMenu(items, showAll = false) {
         } else {
             loadMoreContainer.classList.add('hidden');
         }
-    }
-    
-    // Refresh AOS animations for the newly rendered cards
-    if (window.AOS) {
-        setTimeout(() => AOS.refresh(), 50);
     }
 }
 
