@@ -334,4 +334,51 @@
       padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
     }
   }
+  /* ================================================
+     ORDER LIST DRAWER ANIMATION & DESIGN
+     All responsive border-radius and layout handled
+     here via CSS media queries, NOT inline styles.
+     ================================================ */
+
+  /* MOBILE: Bottom Sheet */
+  #order-list-drawer {
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -4px 40px rgba(0,0,0,0.2);
+  }
+  #order-list-header {
+    border-radius: 24px 24px 0 0;
+  }
+  #order-list-footer {
+    border-radius: 0;
+  }
+  #order-list-drawer.drawer-open {
+    transform: translateY(0);
+  }
+
+  /* DESKTOP (sm+): Centered Modal Dialog */
+  @media (min-width: 640px) {
+    #order-list-drawer {
+      transform: scale(0.95);
+      opacity: 0;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    #order-list-header {
+      border-radius: 24px 24px 0 0;
+    }
+    #order-list-footer {
+      border-radius: 0 0 24px 24px;
+    }
+    #order-list-drawer.drawer-open {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Smooth scrollbar inside the drawer items list */
+  #order-list-items::-webkit-scrollbar { width: 4px; }
+  #order-list-items::-webkit-scrollbar-track { background: transparent; }
+  #order-list-items::-webkit-scrollbar-thumb { background: #E2DFD2; border-radius: 99px; }
 }

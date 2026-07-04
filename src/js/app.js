@@ -11,6 +11,7 @@ const GOOGLE_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1v
 const FALLBACK_DATA = [];
 
 let menuItems = [];
+let myOrderList = []; // Interactive Wishlist state
 
 // Robust CSV Parser
 function parseCSV(text) {
@@ -217,7 +218,9 @@ function renderMenu(items, showAll = false) {
                         <h3 class="menu-name text-lg sm:text-2xl font-serif font-bold text-brand-green mb-2 sm:mb-3">${item.Name}</h3>
                         <p class="menu-desc text-brand-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3">${item.Description}</p>
                         <div class="mt-auto pt-2">
-                            <a href="https://m.me/ezbitesandbitesbytheyard?text=${encodeURIComponent('Hi! I want to order ' + item.Name + ' (₱' + item.Price + ').')}" target="_blank" rel="noopener noreferrer" class="block text-center w-full py-2.5 sm:py-3 rounded-full border-2 border-brand-green text-brand-green text-sm sm:text-base font-medium group-hover:bg-brand-green group-hover:text-white transition-all duration-300 transform group-hover:shadow-md">Order via FB</a>
+                            <button onclick="toggleOrderItem('${escapeHTML(item.Name)}', ${item.Price})" class="order-toggle-btn w-full py-2.5 sm:py-3 rounded-full border-2 font-medium transition-all duration-300 transform shadow-sm hover:shadow-md" data-item="${escapeHTML(item.Name)}">
+                                <!-- JS will inject Add/Remove text and styles here based on state -->
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -240,6 +243,23 @@ function renderMenu(items, showAll = false) {
             loadMoreContainer.classList.add('hidden');
         }
     }
+    
+    // Update button states immediately after rendering
+    updateMenuButtonsUI();
+}
+
+// Helper to escape HTML to prevent XSS in template literals
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
 }
 
 // Category Emoji Map for visual appeal
@@ -457,6 +477,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Default back to All if the category no longer exists
                 renderMenu(menuItems);
             }
+            
+            // Re-apply search filter if there's any text in search
+            const searchInput = document.getElementById('menu-search');
+            if(searchInput && searchInput.value.trim() !== '') {
+                searchInput.dispatchEvent(new Event('input'));
+            }
         } else {
             console.log("SWR: Menu data is identical to cache. No re-render needed.");
         }
@@ -515,5 +541,201 @@ if (imageModal) {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeImageModal();
+        closeOrderList();
     }
 });
+
+// ========================================
+// MY ORDER LIST (Wishlist) LOGIC
+// ========================================
+
+const ORDER_CACHE_KEY = 'ez_beats_my_list';
+const orderFab = document.getElementById('order-list-fab');
+const orderBadge = document.getElementById('order-list-badge');
+const orderModal = document.getElementById('order-list-modal');
+const orderDrawer = document.getElementById('order-list-drawer');
+const orderCloseBtn = document.getElementById('order-list-close');
+const orderItemsContainer = document.getElementById('order-list-items');
+const orderTotalEl = document.getElementById('order-list-total');
+const orderClearBtn = document.getElementById('order-list-clear');
+
+function loadOrderList() {
+    try {
+        const saved = localStorage.getItem(ORDER_CACHE_KEY);
+        if (saved) {
+            myOrderList = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error("Failed to load order list", e);
+    }
+    updateOrderUI();
+}
+
+function saveOrderList() {
+    localStorage.setItem(ORDER_CACHE_KEY, JSON.stringify(myOrderList));
+    updateOrderUI();
+}
+
+function toggleOrderItem(name, price) {
+    const existingIndex = myOrderList.findIndex(item => item.name === name);
+    
+    if (existingIndex >= 0) {
+        // Remove item
+        myOrderList.splice(existingIndex, 1);
+    } else {
+        // Add item (Qty defaults to 1)
+        myOrderList.push({ name, price: parseFloat(price), qty: 1 });
+    }
+    
+    saveOrderList();
+}
+
+function updateOrderItemQty(name, delta) {
+    const item = myOrderList.find(i => i.name === name);
+    if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+            // Remove if qty drops to 0
+            myOrderList = myOrderList.filter(i => i.name !== name);
+        }
+        saveOrderList();
+    }
+}
+
+// Master UI Update function for the entire Order List feature
+function updateOrderUI() {
+    // 1. Update FAB badge & visibility
+    const totalItems = myOrderList.reduce((sum, item) => sum + item.qty, 0);
+    if (orderBadge) orderBadge.textContent = totalItems;
+    
+    if (orderFab) {
+        if (totalItems > 0) {
+            orderFab.classList.remove('hidden');
+            orderFab.classList.add('flex');
+        } else {
+            orderFab.classList.add('hidden');
+            orderFab.classList.remove('flex');
+            // If modal is open and list becomes empty, close it cleanly
+            if (orderModal && !orderModal.classList.contains('opacity-0')) {
+                closeOrderList();
+            }
+        }
+    }
+
+    // 2. Update Menu Buttons (Add/Remove states)
+    updateMenuButtonsUI();
+    
+    // 3. Update Modal Contents
+    renderOrderListItems();
+}
+
+// Update the styling and text of the buttons inside the menu grid
+function updateMenuButtonsUI() {
+    const buttons = document.querySelectorAll('.order-toggle-btn');
+    buttons.forEach(btn => {
+        const itemName = btn.getAttribute('data-item');
+        const isInList = myOrderList.some(i => i.name === itemName);
+        
+        if (isInList) {
+            btn.innerHTML = `
+                <span class="flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Added to List
+                </span>
+            `;
+            btn.className = "order-toggle-btn w-full py-2.5 sm:py-3 rounded-full border-2 font-medium transition-all duration-300 transform shadow-sm border-brand-gold bg-brand-gold/10 text-brand-green hover:bg-red-50 hover:border-red-500/30 hover:text-red-600";
+            // Optional: change text to 'Remove' on hover via CSS/JS, but standard 'Added' state is fine.
+        } else {
+            btn.innerHTML = `Add to List`;
+            btn.className = "order-toggle-btn w-full py-2.5 sm:py-3 rounded-full border-2 font-medium transition-all duration-300 transform shadow-sm border-brand-green text-brand-green hover:bg-brand-green hover:text-white hover:shadow-md";
+        }
+    });
+}
+
+function renderOrderListItems() {
+    if (!orderItemsContainer) return;
+    
+    if (myOrderList.length === 0) {
+        orderItemsContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full text-brand-muted opacity-60">
+                <div class="text-4xl mb-3">📝</div>
+                <p>Your list is empty.</p>
+            </div>
+        `;
+        if (orderTotalEl) orderTotalEl.textContent = '₱0';
+        return;
+    }
+    
+    let html = '';
+    let total = 0;
+    
+    myOrderList.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        
+        html += `
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-brand-border shadow-sm">
+                <div class="flex-1 pr-3">
+                    <h4 class="font-bold text-brand-green text-sm sm:text-base leading-tight">${escapeHTML(item.name)}</h4>
+                    <p class="text-brand-gold font-medium text-xs sm:text-sm mt-1">₱${item.price}</p>
+                </div>
+                
+                <div class="flex items-center gap-3 bg-brand-warm rounded-full px-2 py-1 border border-brand-border">
+                    <button onclick="updateOrderItemQty('${escapeHTML(item.name)}', -1)" class="w-7 h-7 flex items-center justify-center rounded-full text-brand-green hover:bg-white transition-colors" aria-label="Decrease quantity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                    </button>
+                    <span class="font-bold text-sm w-4 text-center text-brand-green">${item.qty}</span>
+                    <button onclick="updateOrderItemQty('${escapeHTML(item.name)}', 1)" class="w-7 h-7 flex items-center justify-center rounded-full text-brand-green hover:bg-white transition-colors" aria-label="Increase quantity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    orderItemsContainer.innerHTML = html;
+    if (orderTotalEl) orderTotalEl.textContent = `₱${total}`;
+}
+
+// Modal Toggle Functions
+function openOrderList() {
+    if (!orderModal || !orderDrawer) return;
+    renderOrderListItems(); // Refresh content before showing
+    orderModal.classList.remove('opacity-0', 'pointer-events-none');
+    // Small delay to allow opacity transition to start before transform
+    requestAnimationFrame(() => {
+        orderDrawer.classList.add('drawer-open');
+    });
+    document.body.style.overflow = 'hidden';
+}
+
+function closeOrderList() {
+    if (!orderModal || !orderDrawer) return;
+    orderDrawer.classList.remove('drawer-open');
+    setTimeout(() => {
+        orderModal.classList.add('opacity-0', 'pointer-events-none');
+        if (document.getElementById('image-modal').classList.contains('opacity-0')) {
+            document.body.style.overflow = '';
+        }
+    }, 300);
+}
+
+// Event Listeners for Order List
+if (orderFab) orderFab.addEventListener('click', openOrderList);
+if (orderCloseBtn) orderCloseBtn.addEventListener('click', closeOrderList);
+if (orderModal) {
+    orderModal.addEventListener('click', (e) => {
+        if (e.target === orderModal) closeOrderList();
+    });
+}
+if (orderClearBtn) {
+    orderClearBtn.addEventListener('click', () => {
+        if (confirm("Are you sure you want to clear your entire order list?")) {
+            myOrderList = [];
+            saveOrderList();
+        }
+    });
+}
+
+// Initialize directly — script is at bottom of <body> so DOM is already ready
+loadOrderList();
