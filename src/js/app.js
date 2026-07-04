@@ -446,10 +446,9 @@ function closeImageModal() {
 const menuContainerEl = document.getElementById('menu-container');
 if (menuContainerEl) {
     menuContainerEl.addEventListener('click', (e) => {
-        // Trigger on any img tag inside a menu card
-        const img = e.target.closest('.menu-card img');
-        if (img) {
-            openImageModal(img.src, img.alt);
+        // Only trigger when clicking directly on an img element inside a menu card
+        if (e.target.tagName === 'IMG' && e.target.closest('.menu-card')) {
+            openImageModal(e.target.src, e.target.alt);
         }
     });
 }
