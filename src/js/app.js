@@ -136,7 +136,16 @@ function renderMenu(items, showAll = false) {
                 </div>
              `;
         } else {
-            container.innerHTML = `<p class="text-brand-muted text-center col-span-full py-8">No items found for this category.</p>`;
+            container.innerHTML = `
+                <div class="col-span-full text-center py-16 px-4 bg-white/50 backdrop-blur-sm rounded-3xl border border-brand-border border-dashed shadow-sm animate-fade-in">
+                    <div class="text-5xl mb-4 opacity-70">🔍</div>
+                    <h3 class="font-serif text-xl sm:text-2xl font-bold text-brand-green mb-2">Walang nahanap</h3>
+                    <p class="text-brand-muted text-sm sm:text-base max-w-md mx-auto mb-6">We couldn't find any items matching your search or category filter.</p>
+                    <button onclick="document.getElementById('menu-search').value = ''; document.querySelector('[data-category=\\'All\\']').click();" class="inline-flex items-center justify-center bg-brand-gold text-brand-green font-semibold py-2.5 px-6 rounded-full hover:bg-brand-gold-light transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-1">
+                        Clear Filters
+                    </button>
+                </div>
+            `;
         }
         
         const loadMoreContainer = document.getElementById('load-more-container');
@@ -204,10 +213,12 @@ function renderMenu(items, showAll = false) {
                             ${item.Category}
                         </div>
                     </div>
-                    <div class="p-5 sm:p-8">
+                    <div class="p-5 sm:p-8 flex flex-col grow">
                         <h3 class="menu-name text-lg sm:text-2xl font-serif font-bold text-brand-green mb-2 sm:mb-3">${item.Name}</h3>
                         <p class="menu-desc text-brand-muted text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3">${item.Description}</p>
-                        <button class="w-full py-2.5 sm:py-3 rounded-full border-2 border-brand-green text-brand-green text-sm sm:text-base font-medium group-hover:bg-brand-green group-hover:text-white transition-all duration-300 transform group-hover:shadow-md">Add to Order</button>
+                        <div class="mt-auto pt-2">
+                            <a href="https://m.me/ezbitesandbitesbytheyard?text=${encodeURIComponent('Hi! I want to order ' + item.Name + ' (₱' + item.Price + ').')}" target="_blank" rel="noopener noreferrer" class="block text-center w-full py-2.5 sm:py-3 rounded-full border-2 border-brand-green text-brand-green text-sm sm:text-base font-medium group-hover:bg-brand-green group-hover:text-white transition-all duration-300 transform group-hover:shadow-md">Order via FB</a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -282,29 +293,52 @@ function renderCategoryFilters(items) {
 // Filter Logic
 function setupFilters() {
     const filterButtons = document.querySelectorAll('#category-filters button');
+    const searchInput = document.getElementById('menu-search');
     
+    function applyFilters() {
+        currentLimit = INITIAL_LIMIT; // Reset pagination limit on filter change
+        const activeBtn = document.querySelector('#category-filters button.active');
+        const category = activeBtn ? activeBtn.getAttribute('data-category') : 'All';
+        const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
+        let filtered = menuItems;
+        
+        // 1. Apply category filter
+        if (category !== 'All') {
+            filtered = filtered.filter(item => item.Category.toLowerCase() === category.toLowerCase());
+        }
+        
+        // 2. Apply search filter
+        if (searchQuery) {
+            filtered = filtered.filter(item => {
+                const searchStr = `${item.Name} ${item.Description} ${item.Category}`.toLowerCase();
+                return searchStr.includes(searchQuery);
+            });
+        }
+        
+        renderMenu(filtered);
+        
+        // Re-trigger AOS animations
+        if (window.AOS) {
+            setTimeout(() => AOS.refresh(), 100);
+        }
+    }
+
     filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             // Update active state of buttons
             filterButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            // Filter items
-            currentLimit = INITIAL_LIMIT; // Reset pagination limit on filter change
-            const category = btn.getAttribute('data-category');
-            if (category === 'All') {
-                renderMenu(menuItems);
-            } else {
-                const filtered = menuItems.filter(item => item.Category.toLowerCase() === category.toLowerCase());
-                renderMenu(filtered);
-            }
-            
-            // Re-trigger AOS animations
-            if (window.AOS) {
-                setTimeout(() => AOS.refresh(), 100);
-            }
+            applyFilters();
         });
     });
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            applyFilters();
+        });
+    }
 }
 
 // Skeleton Loader

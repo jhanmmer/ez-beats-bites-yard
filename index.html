@@ -402,10 +402,20 @@
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Section Header -->
-            <div class="text-center mb-6 sm:mb-10" data-aos="fade-up">
+            <div class="text-center mb-6 sm:mb-8" data-aos="fade-up">
                 <span class="text-brand-gold font-cursive text-xl sm:text-2xl">Sarap Nito</span>
                 <h2 class="font-serif text-3xl sm:text-4xl lg:text-6xl font-bold text-brand-green mt-2 mb-4 sm:mb-6">Our Menu</h2>
-                <p class="text-brand-muted max-w-lg mx-auto text-sm sm:text-lg">Explore our freshly prepared selection of bites and drinks — updated regularly to bring you the best yard experience.</p>
+                <p class="text-brand-muted max-w-lg mx-auto text-sm sm:text-lg mb-6">Explore our freshly prepared selection of bites and drinks — updated regularly to bring you the best yard experience.</p>
+                
+                <!-- Search Bar -->
+                <div class="max-w-md mx-auto relative mb-2 sm:mb-4">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="menu-search" placeholder="Search for ramen, fries, coffee..." class="block w-full pl-11 pr-4 py-3 sm:py-3.5 bg-white border border-brand-border rounded-full text-sm sm:text-base placeholder-brand-muted/70 focus:outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition-all shadow-sm">
+                </div>
             </div>
 
             <!-- Category Filters — horizontally scrollable on mobile -->
@@ -513,6 +523,13 @@
         </div>
     </footer>
     
+    <!-- ========================================
+         SCROLL TO TOP BUTTON
+         ======================================== -->
+    <button id="scroll-to-top" class="fixed bottom-6 right-6 z-40 bg-brand-green text-brand-gold p-3 rounded-full shadow-lg border border-brand-gold/30 opacity-0 translate-y-10 pointer-events-none transition-all duration-300 hover:bg-brand-green-dark hover:scale-110 focus:outline-none focus:ring-2 focus:ring-brand-gold" aria-label="Scroll to top">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
     <!-- ========================================
          SCRIPTS
          ======================================== -->
