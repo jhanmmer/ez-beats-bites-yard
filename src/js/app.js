@@ -7,15 +7,8 @@
 // To get this: File > Share > Publish to web > Link > Entire Document > Comma-separated values (.csv)
 const GOOGLE_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDmgfHn2o1-0dYbDHfyRONP_ORwWETHm_p-TvHEDTDvPlImpNqOR96cxH7pEhc9lmjU8XY932in8A4/pub?gid=0&single=true&output=csv'; // e.g. 'https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv'
 
-// Fallback data so the site works before you connect your Google Sheet
-const FALLBACK_DATA = [
-    { Category: "Bites", Name: "Classic Yard Burger", Description: "Juicy beef patty with melted cheese, fresh lettuce, and our secret EZ sauce.", Price: "150", ImageURL: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1500&auto=format&fit=crop" },
-    { Category: "Bites", Name: "Sizzling Sisig", Description: "Crispy pork maskara perfectly seasoned, served with egg and calamansi. Perfect for sharing!", Price: "180", ImageURL: "https://images.unsplash.com/photo-1625937712144-0c6ef256073b?q=80&w=1500&auto=format&fit=crop" },
-    { Category: "Bites", Name: "Loaded Fries", Description: "Crispy fries topped with melted cheese, bacon bits, and jalapenos.", Price: "120", ImageURL: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?q=80&w=1500&auto=format&fit=crop" },
-    { Category: "Drinks", Name: "Sunset Mojito", Description: "Refreshing blend of mint, lime, and our special fruit mix to cool down your night.", Price: "95", ImageURL: "https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=1500&auto=format&fit=crop" },
-    { Category: "Drinks", Name: "Iced Caramel Macchiato", Description: "Premium coffee over ice with a rich caramel drizzle.", Price: "110", ImageURL: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=1500&auto=format&fit=crop" },
-    { Category: "Specials", Name: "EZ Platter (For 4)", Description: "A massive mix of BBQ, sisig, fries, and nachos. The ultimate yard experience.", Price: "499", ImageURL: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1500&auto=format&fit=crop" }
-];
+// Fallback data is now empty so it doesn't show fake items when Google Sheets fails
+const FALLBACK_DATA = [];
 
 let menuItems = [];
 
