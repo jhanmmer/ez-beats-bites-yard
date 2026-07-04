@@ -23,7 +23,7 @@ const securityHeaders = {
     "base-uri 'self'",
     "frame-ancestors 'self'",
     "object-src 'none'",
-    "script-src 'self' 'unsafe-inline' https://unpkg.com",
+    "script-src 'self' https://unpkg.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
     "img-src 'self' data: https:",
     "font-src 'self' https://fonts.gstatic.com",
