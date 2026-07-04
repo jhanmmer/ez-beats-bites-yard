@@ -120,7 +120,25 @@ function renderMenu(items, showAll = false) {
     currentFilteredItems = items;
     
     if (items.length === 0) {
-        container.innerHTML = `<p class="text-brand-muted text-center col-span-full">No items found for this category.</p>`;
+        const activeFilter = document.querySelector('#category-filters button.active');
+        const isAllCategory = !activeFilter || activeFilter.getAttribute('data-category') === 'All';
+
+        if (isAllCategory && menuItems.length === 0) {
+             container.innerHTML = `
+                <div class="col-span-full text-center py-10 px-4 bg-white rounded-3xl border border-brand-border shadow-sm">
+                    <div class="text-5xl mb-4 animate-bounce">😢</div>
+                    <h3 class="font-serif text-2xl font-bold text-brand-green mb-2">Oops! Menu is taking a break</h3>
+                    <p class="text-brand-muted text-sm sm:text-base max-w-md mx-auto mb-6">Hindi namin ma-load ang menu ngayon (maybe connection issue). But don't worry, you can still order!</p>
+                    <a href="https://m.me/ezbitesandbitesbytheyard" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-brand-green text-brand-cream font-semibold py-3 px-6 rounded-full hover:bg-brand-green/90 transition-all duration-300">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.145 2 11.26c0 2.92 1.5 5.518 3.86 7.234v3.506l3.525-1.933c.84.233 1.724.36 2.615.36 5.523 0 10-4.145 10-9.26S17.523 2 12 2zm1.182 12.35l-2.617-2.793-5.093 2.793 5.59-5.94 2.64 2.793 5.068-2.793-5.588 5.94z"/></svg>
+                        Message Us on FB
+                    </a>
+                </div>
+             `;
+        } else {
+            container.innerHTML = `<p class="text-brand-muted text-center col-span-full py-8">No items found for this category.</p>`;
+        }
+        
         const loadMoreContainer = document.getElementById('load-more-container');
         if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
         return;

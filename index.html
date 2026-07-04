@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZ Beats & Bites by the Yard — Good Vibes, Good Food</title>
     <meta name="description" content="Cozy outdoor dining in Luisiana, Laguna. Acoustic beats, delicious bites, and unforgettable nights at the yard.">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="EZ Beats & Bites by the Yard">
+    <meta property="og:description" content="Cozy outdoor dining in Luisiana, Laguna. Acoustic beats, delicious bites, and unforgettable nights at the yard.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/jhanmmer/ez-beats-bites-yard/main/src/yard_dining.webp">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -461,10 +466,14 @@
                             <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 mt-0.5">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             </div>
-                            <div>
-                                <div class="font-semibold text-brand-cream text-sm sm:text-base">Brgy. San Buenaventura, Luisiana</div>
-                                <div class="text-xs sm:text-sm text-brand-cream/60">Laguna, Philippines, 4032</div>
-                            </div>
+                            <a href="https://maps.app.goo.gl/mdk2tvQNcVQTpTkF8" target="_blank" rel="noopener noreferrer" class="block group">
+                                <div class="font-semibold text-brand-cream text-sm sm:text-base group-hover:text-brand-gold transition-colors">Brgy. San Buenaventura, Luisiana</div>
+                                <div class="text-xs sm:text-sm text-brand-cream/60 group-hover:text-brand-gold/80 transition-colors">Laguna, Philippines, 4032</div>
+                                <div class="text-brand-gold text-[10px] sm:text-xs mt-1 flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                                    <span>Get Directions in Google Maps</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </div>
+                            </a>
                         </li>
                         <li class="flex items-start gap-3 sm:gap-4">
                             <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -477,6 +486,12 @@
                             </div>
                         </li>
                     </ul>
+
+                    <!-- Embedded Google Map -->
+                    <div class="mt-6 sm:mt-8 rounded-2xl overflow-hidden border border-white/10 shadow-lg relative group">
+                        <div class="absolute inset-0 bg-brand-green/20 group-hover:bg-transparent pointer-events-none transition-colors duration-500 z-10"></div>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7094.166946647653!2d121.56748580552372!3d14.187629822334928!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd55005113469f%3A0x2dd6eadc6ceb6372!2sEZ%20Ventures!5e0!3m2!1sen!2sph!4v1783137497243!5m2!1sen!2sph" width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" class="relative z-0 opacity-80 group-hover:opacity-100 transition-opacity duration-500"></iframe>
+                    </div>
                 </div>
                 
                 <!-- Contact -->
