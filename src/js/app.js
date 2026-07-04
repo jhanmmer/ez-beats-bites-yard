@@ -173,6 +173,11 @@ function renderMenu(items, showAll = false) {
             loadMoreContainer.classList.add('hidden');
         }
     }
+    
+    // Refresh AOS animations for the newly rendered cards
+    if (window.AOS) {
+        setTimeout(() => AOS.refresh(), 50);
+    }
 }
 
 // Category Emoji Map for visual appeal
@@ -270,22 +275,45 @@ function renderSkeletons() {
     }
 }
 
-// Initialize App
-document.addEventListener('DOMContentLoaded', async () => {
-    // Show loaders initially
-    renderSkeletons();
-    
-    // Fetch data
-    const rawItems = await fetchMenu();
-    
-    // Filter out inactive items (defaults to active if Status is empty or doesn't exist)
-    menuItems = rawItems.filter(item => {
+// Filter out inactive items (defaults to active if Status is empty or doesn't exist)
+function processRawItems(rawItems) {
+    return rawItems.filter(item => {
         if (!item.Status || item.Status.trim() === '') return true;
         const status = item.Status.trim().toLowerCase();
         return status !== 'inactive' && status !== 'false' && status !== '0' && status !== 'no';
     });
+}
+
+// Initialize App
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Try to load from localStorage cache immediately (even if expired) for instant render
+    const cachedDataStr = localStorage.getItem('ez_beats_menu_data');
+    let initialRawData = FALLBACK_DATA;
+    let isUsingFallback = true;
     
-    // Render Filters and Menu dynamically
+    if (cachedDataStr) {
+        try {
+            const parsed = JSON.parse(cachedDataStr);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                initialRawData = parsed;
+                isUsingFallback = false;
+                console.log("Instant load: Using cached menu data.");
+            }
+        } catch (e) {
+            console.error("Failed to parse cached menu data:", e);
+        }
+    }
+    
+    if (isUsingFallback) {
+        console.log("Instant load: Using fallback menu data.");
+        // If there's no cache, show skeletons first so user knows something is loading
+        renderSkeletons();
+    }
+    
+    // Process and store initial items
+    menuItems = processRawItems(initialRawData);
+    
+    // Render Filters and Menu dynamically from cache/fallback instantly
     renderCategoryFilters(menuItems);
     renderMenu(menuItems);
     
@@ -296,5 +324,58 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentLimit = currentFilteredItems.length; // Expand limit to display all remaining items
             renderMenu(currentFilteredItems, true);
         });
+    }
+    
+    // 2. Fetch fresh data in the background (SWR pattern)
+    try {
+        console.log("SWR: Fetching fresh data in background...");
+        const rawItems = await fetchMenu();
+        const freshItems = processRawItems(rawItems);
+        
+        // Only re-render if data has actually changed to prevent UI flicker
+        const currentDataStr = JSON.stringify(menuItems);
+        const freshDataStr = JSON.stringify(freshItems);
+        
+        if (currentDataStr !== freshDataStr) {
+            console.log("SWR: Menu data updated, re-rendering...");
+            
+            // Keep track of previously selected category
+            const activeBtn = document.querySelector('#category-filters button.active');
+            const prevCategory = activeBtn ? activeBtn.getAttribute('data-category') : 'All';
+            
+            menuItems = freshItems;
+            
+            // Re-render filters with fresh data
+            renderCategoryFilters(menuItems);
+            
+            // Restore active category filter
+            const filterButtons = document.querySelectorAll('#category-filters button');
+            let matchedBtn = null;
+            filterButtons.forEach(btn => {
+                const cat = btn.getAttribute('data-category');
+                if (cat === prevCategory) {
+                    matchedBtn = btn;
+                }
+            });
+            
+            if (matchedBtn) {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                matchedBtn.classList.add('active');
+                
+                if (prevCategory === 'All') {
+                    renderMenu(menuItems);
+                } else {
+                    const filtered = menuItems.filter(item => item.Category.toLowerCase() === prevCategory.toLowerCase());
+                    renderMenu(filtered);
+                }
+            } else {
+                // Default back to All if the category no longer exists
+                renderMenu(menuItems);
+            }
+        } else {
+            console.log("SWR: Menu data is identical to cache. No re-render needed.");
+        }
+    } catch (err) {
+        console.error("SWR: Background fetch failed:", err);
     }
 });
