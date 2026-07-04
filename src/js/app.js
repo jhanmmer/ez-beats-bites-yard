@@ -419,3 +419,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("SWR: Background fetch failed:", err);
     }
 });
+
+// ========================================
+// IMAGE MODAL (Lightbox) logic
+// ========================================
+const imageModal = document.getElementById('image-modal');
+const imageModalImg = document.getElementById('image-modal-img');
+const imageModalCaption = document.getElementById('image-modal-caption');
+const imageModalClose = document.getElementById('image-modal-close');
+
+function openImageModal(src, alt) {
+    if (!imageModal || !imageModalImg) return;
+    imageModalImg.src = src;
+    if (imageModalCaption) imageModalCaption.textContent = alt || '';
+    imageModal.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = 'hidden'; // Prevent background scroll
+}
+
+function closeImageModal() {
+    if (!imageModal) return;
+    imageModal.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = ''; // Restore scroll
+}
+
+// Attach image preview click listeners using event delegation
+const menuContainerEl = document.getElementById('menu-container');
+if (menuContainerEl) {
+    menuContainerEl.addEventListener('click', (e) => {
+        // Trigger on any img tag inside a menu card
+        const img = e.target.closest('.menu-card img');
+        if (img) {
+            openImageModal(img.src, img.alt);
+        }
+    });
+}
+
+// Close events
+if (imageModalClose) {
+    imageModalClose.addEventListener('click', closeImageModal);
+}
+if (imageModal) {
+    imageModal.addEventListener('click', (e) => {
+        // Close if click is outside the image container (i.e. on the backdrop)
+        if (e.target === imageModal) {
+            closeImageModal();
+        }
+    });
+}
+
+// Close on Escape key press
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
