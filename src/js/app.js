@@ -5,7 +5,7 @@
 
 // IMPORTANT: Replace this URL with your Google Sheet published CSV link!
 // To get this: File > Share > Publish to web > Link > Entire Document > Comma-separated values (.csv)
-const GOOGLE_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDmgfHn2o1-0dYbDHfyRONP_ORwWETHm_p-TvHEDTDvPlImpNqOR96cxH7pEhc9lmjU8XY932in8A4/pub?gid=0&single=true&output=csv'; // e.g. 'https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv'
+const GOOGLE_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTHXs_TK_VSVLE0ltlae277ePtdORknnAuivh-GuPHcOUX3NS92edFO8-3xGlliEQve_k0N-MAA-DI/pub?output=csv'; // e.g. 'https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv'
 
 // Fallback data is now empty so it doesn't show fake items when Google Sheets fails
 const FALLBACK_DATA = [];
